@@ -1,4 +1,71 @@
+import { useState, useEffect } from 'react'
+import { Alert } from './modal/Alert'
+
 export function Hero() {
+  const [showDownloadModal, setShowDownloadModal] = useState(false)
+  const [showQuickStartModal, setShowQuickStartModal] = useState(false)
+  const [isLightMode, setIsLightMode] = useState(false)
+
+  // 应用主题到页面的辅助函数
+  const applyTheme = (lightMode: boolean) => {
+    // 更新html元素的全局主题类
+    if (lightMode) {
+      document.documentElement.classList.remove('dark-mode')
+      document.documentElement.classList.add('light-mode')
+    } else {
+      document.documentElement.classList.remove('light-mode')
+      document.documentElement.classList.add('dark-mode')
+    }
+    
+    // 更新hero元素的主题类
+    const heroElement = document.querySelector('.hero')
+    if (heroElement) {
+      heroElement.classList.toggle('hero--light', lightMode)
+    }
+  }
+
+  // 页面加载时读取保存的主题设置
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('lythtools-theme')
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+    
+    // 如果有保存的主题则使用，否则根据系统偏好设置
+    const shouldUseLightMode = savedTheme ? savedTheme === 'light' : !mediaQuery.matches
+    
+    setIsLightMode(shouldUseLightMode)
+    applyTheme(shouldUseLightMode)
+    
+    // 监听系统主题变化（仅在用户未手动设置主题时生效）
+    const handleSystemThemeChange = (e: MediaQueryListEvent) => {
+      const currentSavedTheme = localStorage.getItem('lythtools-theme')
+      // 只有在用户没有手动设置过主题时才跟随系统
+      if (!currentSavedTheme) {
+        const newLightMode = !e.matches
+        setIsLightMode(newLightMode)
+        applyTheme(newLightMode)
+      }
+    }
+    
+    mediaQuery.addEventListener('change', handleSystemThemeChange)
+    
+    // 清理监听器
+    return () => {
+      mediaQuery.removeEventListener('change', handleSystemThemeChange)
+    }
+  }, [])
+
+  // 主题切换处理函数
+  const handleThemeToggle = () => {
+    const newLightMode = !isLightMode
+    setIsLightMode(newLightMode)
+    
+    // 保存到localStorage
+    localStorage.setItem('lythtools-theme', newLightMode ? 'light' : 'dark')
+    
+    // 应用主题到页面
+    applyTheme(newLightMode)
+  }
+
   return (
     <section className="hero" role="banner">
       <div className="hero__toolbar">
@@ -16,11 +83,9 @@ export function Hero() {
           id="themeToggle"
           className="theme-toggle-input"
           type="checkbox"
+          checked={isLightMode}
           aria-label="切换明暗模式"
-          onChange={() => {
-            const el = document.getElementById('themeToggle') as HTMLInputElement | null
-            el?.closest('.hero')?.classList.toggle('hero--light', !!el?.checked)
-          }}
+          onChange={handleThemeToggle}
         />
         <label className="theme-toggle" htmlFor="themeToggle" title="切换明暗模式">
           <i className="icon ri-moon-line" aria-hidden></i>
@@ -45,12 +110,20 @@ export function Hero() {
               当前为软件内部测试阶段，欢迎您的使用与反馈。正式版发布敬请期待！
             </p>
             <div className="hero__cta">
-              <a className="btn btn--primary" href="#" aria-label="下载 LythTools">
+              <button 
+                className="btn btn--primary" 
+                aria-label="下载 LythTools"
+                onClick={() => setShowDownloadModal(true)}
+              >
                 下载软件
-              </a>
-              <a className="btn btn--ghost" href="#" aria-label="了解 LythTools 功能">
+              </button>
+              <button 
+                className="btn btn--ghost" 
+                aria-label="了解 LythTools 功能"
+                onClick={() => setShowQuickStartModal(true)}
+              >
                 快速开始
-              </a>
+              </button>
             </div>
             <div className="hero__pills" aria-hidden>
               <span className="pill">⚡ 文件搜索</span>
@@ -139,6 +212,28 @@ export function Hero() {
           </div>
         </div>
       </div>
+
+      {/* 下载软件提醒 */}
+      <Alert
+        isOpen={showDownloadModal}
+        onClose={() => setShowDownloadModal(false)}
+        title="暂不支持下载"
+        description="LythTools 正在紧锣密鼓地开发中<br />敬请期待正式版发布！"
+        emoji="🚧"
+        buttonText="知道了"
+        glowColor="rgba(255, 165, 0, 0.3)"
+      />
+
+      {/* 快速开始提醒 */}
+      <Alert
+        isOpen={showQuickStartModal}
+        onClose={() => setShowQuickStartModal(false)}
+        title="功能正在建设中"
+        description="详细文档和教程正在编写中<br />感谢您的耐心等待！"
+        emoji="📖"
+        buttonText="知道了"
+        glowColor="rgba(59, 130, 246, 0.3)"
+      />
     </section>
   )
 }

@@ -2,11 +2,33 @@
 <html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/png" href="/logo.png" />
+    <link rel="apple-touch-icon" href="/logo.png" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>LythTools · 开发者效率工具</title>
     <meta name="description" content="LythTools，让开发更轻、效率更高。" />
+    
+    <!-- 防止主题闪烁的预加载脚本 -->
+    <script>
+      (function() {
+        try {
+          const savedTheme = localStorage.getItem('lythtools-theme');
+          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const shouldUseLightMode = savedTheme ? savedTheme === 'light' : !prefersDark;
+          
+          // 为body添加主题类，用于全局主题控制
+          if (shouldUseLightMode) {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.add('dark-mode');
+          }
+        } catch (e) {
+          // 如果出错则使用默认主题
+          console.warn('Failed to apply saved theme:', e);
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
