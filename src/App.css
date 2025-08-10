@@ -1,5 +1,62 @@
+/* ===== 全局移动端优化 ===== */
+
 /* 页面布局容器重置，Hero 全屏显示 */
-#root { margin: 0 auto; padding: 0; }
+#root { 
+  margin: 0 auto; 
+  padding: 0; 
+  overflow-x: hidden; /* 防止横向滚动 */
+}
+
+/* 全局触摸优化 */
+* {
+  -webkit-tap-highlight-color: transparent; /* 移除iOS点击高亮 */
+  -webkit-touch-callout: none; /* 禁用iOS长按菜单 */
+}
+
+/* 文本选择优化 */
+*:not(input):not(textarea) {
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
+  user-select: none; /* Standard */
+}
+
+/* 输入框和文本区域仍保持可选择 */
+input, textarea {
+  -webkit-user-select: auto;
+  -moz-user-select: auto;
+  -ms-user-select: auto;
+  user-select: auto;
+}
+
+/* 滚动优化 */
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%; /* 防止iOS文字缩放 */
+}
+
+/* 触摸滚动优化 */
+body {
+  -webkit-overflow-scrolling: touch; /* iOS平滑滚动 */
+  overscroll-behavior: none; /* 禁用过度滚动 */
+}
+
+/* 按钮和链接的触摸优化 */
+button, a, .btn, .pill, .theme-toggle, .result-item {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 确保所有交互元素都有足够的触摸目标（最小44px） */
+@media (max-width: 768px) {
+  button, a, [role="button"], .btn {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
 
 /* hero部分 */
 .hero {
@@ -323,7 +380,7 @@
   animation: fadeInUp 0.6s ease-out 1.2s both;
 }
 .pill {
-  padding: 6px 10px;
+  padding: 0 12px; /* 统一左右内边距，顶底由高度控制 */
   border-radius: 999px;
   font-size: 12px;
   color: var(--text-primary);
@@ -331,6 +388,11 @@
   border: 1px solid rgba(var(--border-color-rgb), .16);
   transition: background-color .15s ease, border-color .15s ease, color .15s ease, transform .2s ease;
   animation: pillFloat 4s ease-in-out infinite;
+  height: 32px; /* 固定高度 */
+  box-sizing: border-box; /* 确保边框和内边距包含在高度内 */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .pill:nth-child(1) { animation-delay: 0s; }
@@ -344,14 +406,660 @@
   transform: translateY(-2px) scale(1.05); 
 }
 
-@media (max-width: 1080px) { 
-  .hero__grid { grid-template-columns: 1fr; gap: 28px; } 
-  .search-shell { width: 100%; }
+/* ===== 响应式媒体查询 ===== */
+
+/* 大屏幕桌面端 (1200px+) */
+@media (min-width: 1200px) {
+  .hero {
+    padding-inline: min(8vw, 100px);
+  }
+  
+  .hero__title {
+    font-size: clamp(48px, 7vw, 96px);
+  }
 }
 
-@media (max-width: 960px) { 
-  .hero { padding: 72px 6vw 56px; } 
-  .hero__title { font-size: clamp(36px, 9vw, 56px); }
+/* 中等桌面端和笔记本 (768px - 1200px) */
+@media (max-width: 1199px) {
+  .hero__grid { 
+    grid-template-columns: 1fr; 
+    gap: 32px; 
+    max-width: 800px;
+  }
+  
+  .search-shell { 
+    width: 100%; 
+    max-width: 600px;
+  }
+  
+  .hero__title {
+    font-size: clamp(40px, 8vw, 72px);
+    text-align: center;
+  }
+  
+  .hero__subtitle {
+    text-align: center;
+    max-width: 65ch;
+    margin-inline: auto;
+  }
+  
+  .hero__cta {
+    justify-content: center;
+  }
+  
+  .hero__pills {
+    justify-content: center;
+  }
+}
+
+/* 平板端 (768px - 1024px) */
+@media (max-width: 1024px) {
+  .hero {
+    padding-block: clamp(48px, 6vh, 80px);
+    padding-inline: min(6vw, 64px);
+  }
+  
+  .hero .hero__toolbar {
+    top: 16px;
+    right: min(6vw, 64px);
+  }
+  
+  .hero__title {
+    font-size: clamp(36px, 8.5vw, 64px);
+    margin: 20px 0 16px;
+  }
+  
+  .hero__subtitle {
+    font-size: clamp(15px, 2vw, 17px);
+    margin: 12px auto 32px;
+  }
+  
+  .search-shell {
+    max-width: 550px;
+  }
+  
+  .results-grid {
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 0.5rem;
+    padding: 0.875rem;
+  }
+  
+  .result-item {
+    min-height: 85px;
+    padding: 0.625rem 0.375rem;
+  }
+  
+  .result-icon {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+  
+  .result-title {
+    font-size: 0.75rem;
+  }
+  
+  .result-description {
+    font-size: 0.65rem;
+  }
+}
+
+/* 小平板和大手机横屏 (576px - 768px) */
+@media (max-width: 768px) {
+  .hero {
+    /* 增加顶部边距避免工具栏覆盖 */
+    padding-block: clamp(64px, 7vh, 80px) clamp(32px, 4vh, 56px);
+    padding-inline: min(5vw, 32px);
+  }
+  
+  .hero .hero__toolbar {
+    top: 16px; /* 稍微下移 */
+    right: min(5vw, 32px);
+    gap: 8px; /* 增加间距 */
+    z-index: 10; /* 确保层级 */
+  }
+  
+  .hero .theme-toggle,
+  .hero .github-link {
+    width: 44px; /* 增大触摸目标 */
+    height: 44px;
+    border-radius: 14px;
+  }
+  
+  .hero .theme-toggle .icon {
+    font-size: 20px; /* 稍微调小图标 */
+  }
+  
+  .hero__content {
+    max-width: 100%;
+    text-align: center;
+    /* 为工具栏预留空间 */
+    padding-top: 4px;
+  }
+  
+  .hero__eyebrow {
+    font-size: 11px;
+    padding: 8px 16px;
+  }
+  
+  .hero__title {
+    font-size: clamp(32px, 9vw, 56px);
+    margin: 16px 0 14px;
+    line-height: 1.1;
+  }
+  
+  .hero__subtitle {
+    font-size: clamp(14px, 2.2vw, 16px);
+    margin: 10px auto 28px;
+    line-height: 1.6;
+  }
+  
+  .hero__cta {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .btn {
+    width: 100%; /* 满宽按钮 */
+    justify-content: center;
+    padding: 12px 20px;
+    font-size: 15px;
+    border-radius: 12px;
+    min-height: 48px; /* 触摸友好 */
+  }
+  
+  .hero__pills {
+    gap: 8px;
+    margin-top: 20px;
+  }
+  
+  .pill {
+    font-size: 13px;
+    border-radius: 20px;
+    /* 使用全局设置的固定高度32px和统一padding */
+  }
+  
+  .search-shell {
+    max-width: 100%;
+  }
+  
+  .search-box {
+    border-radius: 16px;
+  }
+  
+  .search-input-with-logo {
+    font-size: 16px; /* 防止iOS放大 */
+    padding: 1.125rem 0;
+  }
+  
+  .results-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 0.375rem;
+    padding: 0.75rem;
+  }
+  
+  .result-item {
+    min-height: 78px;
+    padding: 0.5rem 0.25rem;
+    border-radius: 12px;
+  }
+  
+  .result-icon {
+    width: 2rem;
+    height: 2rem;
+    margin-bottom: 0.25rem;
+  }
+  
+  .result-title {
+    font-size: 0.7rem;
+    line-height: 1.1;
+  }
+  
+  .result-description {
+    font-size: 0.6rem;
+  }
+  
+  /* 优化光晕效果在小屏幕上的性能 */
+  .glow {
+    filter: blur(48px);
+    opacity: 0.4;
+  }
+  
+  .glow--1 {
+    width: 300px;
+    height: 300px;
+    left: -60px;
+    top: -40px;
+  }
+  
+  .glow--2 {
+    width: 380px;
+    height: 380px;
+    right: -80px;
+    bottom: -60px;
+  }
+  
+  .gridlines {
+    background-size: 24px 24px;
+    opacity: 0.2;
+  }
+  
+  .hero.hero--light .gridlines {
+    opacity: 0.15;
+  }
+}
+
+/* 手机端 (最大 576px) */
+@media (max-width: 576px) {
+  .hero {
+    /* 增加顶部边距以避免工具栏覆盖内容 */
+    padding-block: clamp(72px, 8vh, 92px) clamp(24px, 4vh, 48px);
+    padding-inline: 16px;
+  }
+  
+  .hero .hero__toolbar {
+    top: 16px; /* 稍微下移一点 */
+    right: 16px;
+    gap: 6px; /* 增加间距 */
+    z-index: 10; /* 确保在最上层 */
+  }
+  
+  .hero .theme-toggle,
+  .hero .github-link {
+    width: 48px; /* 稍微增大触摸目标 */
+    height: 48px;
+    border-radius: 16px;
+  }
+  
+  .hero .theme-toggle .icon {
+    font-size: 22px; /* 稍微调小图标 */
+  }
+  
+  .hero__content {
+    /* 确保内容区域不会被工具栏遮挡 */
+    padding-top: 8px;
+  }
+  
+  .hero__eyebrow {
+    font-size: 11px; /* 稍微增大 */
+    padding: 8px 14px;
+    margin-bottom: 12px;
+  }
+  
+  .hero__title {
+    font-size: clamp(24px, 8vw, 42px); /* 调整范围防止过大 */
+    margin: 12px 0 10px;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+  
+  .hero__subtitle {
+    font-size: clamp(12px, 2.2vw, 14px); /* 调整范围 */
+    margin: 8px auto 20px;
+    max-width: 95%; /* 增加可用宽度 */
+    line-height: 1.5;
+  }
+  
+  .hero__cta {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+  }
+  
+  .btn {
+    width: 100%;
+    justify-content: center;
+    padding: 14px 16px;
+    font-size: 16px;
+    min-height: 52px; /* 更大的触摸目标 */
+  }
+  
+  .hero__pills {
+    gap: 6px;
+    margin-top: 16px;
+  }
+  
+  .pill {
+    font-size: 12px;
+    /* 使用全局设置的固定高度32px和统一padding */
+  }
+  
+  .search-box {
+    margin: 0 -4px; /* 利用更多水平空间 */
+  }
+  
+  .search-input-with-logo {
+    font-size: 16px;
+    padding: 1.25rem 0;
+  }
+  
+  .logo-wrap {
+    padding-left: 1rem;
+  }
+  
+  .right-hints {
+    padding-right: 1rem;
+  }
+  
+  .shortcut-hint {
+    display: none; /* 隐藏快捷键提示在小屏幕上 */
+  }
+  
+  .results-container {
+    margin-top: 0.375rem;
+  }
+  
+  .results-grid {
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 0.25rem;
+    padding: 0.625rem;
+  }
+  
+  .result-item {
+    min-height: 70px;
+    padding: 0.375rem 0.125rem;
+    border-radius: 10px;
+  }
+  
+  .result-icon {
+    width: 1.75rem;
+    height: 1.75rem;
+    margin-bottom: 0.125rem;
+  }
+  
+  .result-title {
+    font-size: 0.65rem;
+    line-height: 1.05;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+  
+  .result-description {
+    font-size: 0.55rem;
+    margin-top: 0.0625rem;
+  }
+  
+  /* 进一步优化动画性能 */
+  .glow {
+    display: none; /* 在小屏幕上禁用光晕以提升性能 */
+  }
+  
+  .gridlines {
+    display: none; /* 在小屏幕上禁用网格线以提升性能 */
+  }
+  
+  /* 简化动画以提升性能 */
+  .pill {
+    animation: none;
+  }
+  
+  .pill:hover {
+    transform: none;
+    background: rgba(var(--border-color-rgb), .12);
+  }
+}
+
+/* 超小屏幕 (最大 400px) */
+@media (max-width: 400px) {
+  .hero {
+    /* 进一步增加顶部边距，减少左右边距 */
+    padding-block: clamp(76px, 9vh, 96px) clamp(20px, 3vh, 40px);
+    padding-inline: 12px;
+  }
+  
+  .hero .hero__toolbar {
+    top: 12px; /* 稍微向上移动 */
+    right: 12px;
+    gap: 4px; /* 减少间距节省空间 */
+  }
+  
+  .hero .theme-toggle,
+  .hero .github-link {
+    width: 44px; /* 调整大小适应超小屏幕 */
+    height: 44px;
+    border-radius: 14px;
+  }
+  
+  .hero .theme-toggle .icon {
+    font-size: 20px;
+  }
+  
+  .hero__eyebrow {
+    font-size: 10px;
+    padding: 6px 12px;
+    margin-bottom: 10px;
+  }
+  
+  .hero__title {
+    font-size: clamp(20px, 7vw, 36px); /* 进一步缩小避免溢出 */
+    margin: 10px 0 8px;
+    line-height: 1.05; /* 紧凑行高 */
+  }
+  
+  .hero__subtitle {
+    font-size: clamp(11px, 2vw, 13px); /* 更小字体 */
+    margin: 6px auto 18px;
+    max-width: 98%; /* 最大化利用宽度 */
+    line-height: 1.4;
+  }
+  
+  .hero__cta {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    margin-top: -2px; /* 减少上边距 */
+  }
+  
+  .btn {
+    width: 100%; /* 满宽按钮 */
+    justify-content: center;
+    padding: 12px 14px;
+    font-size: 14px; /* 稍小字体 */
+    min-height: 48px;
+    border-radius: 12px;
+  }
+  
+  .hero__pills {
+    gap: 4px;
+    margin-top: 12px; /* 减少上边距 */
+  }
+  
+  .pill {
+    font-size: 11px;
+    border-radius: 16px;
+    /* 使用全局设置的固定高度32px和统一padding */
+  }
+  
+  .search-shell {
+    margin-top: -4px; /* 稍微上移搜索框 */
+  }
+  
+  .search-box {
+    margin: 0 -2px; /* 利用更多空间 */
+    border-radius: 14px;
+  }
+  
+  .search-input-with-logo {
+    font-size: 15px; /* 稍小防止iOS放大 */
+    padding: 1.125rem 0;
+  }
+  
+  .logo-wrap {
+    padding-left: 0.875rem;
+  }
+  
+  .right-hints {
+    padding-right: 0.875rem;
+  }
+  
+  .results-grid {
+    grid-template-columns: repeat(auto-fill, minmax(75px, 1fr)); /* 更小网格 */
+    gap: 0.125rem; /* 最小间距 */
+    padding: 0.5rem;
+  }
+  
+  .result-item {
+    min-height: 58px; /* 更紧凑 */
+    padding: 0.25rem 0.125rem;
+    border-radius: 8px;
+  }
+  
+  .result-icon {
+    width: 1.375rem;
+    height: 1.375rem;
+    margin-bottom: 0.0625rem;
+  }
+  
+  .result-title {
+    font-size: 0.55rem;
+    line-height: 1;
+  }
+  
+  .result-description {
+    font-size: 0.45rem;
+    margin-top: 0.0625rem;
+  }
+}
+
+/* 极小屏幕 (最大 350px) - 针对旧设备优化 */
+@media (max-width: 350px) {
+  .hero {
+    padding-block: clamp(68px, 10vh, 88px) clamp(16px, 2vh, 32px);
+    padding-inline: 8px; /* 最小边距 */
+  }
+  
+  .hero .hero__toolbar {
+    top: 10px;
+    right: 8px;
+    gap: 2px; /* 最小间距 */
+  }
+  
+  .hero .theme-toggle,
+  .hero .github-link {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+  }
+  
+  .hero .theme-toggle .icon {
+    font-size: 18px;
+  }
+  
+  .hero__eyebrow {
+    font-size: 9px;
+    padding: 4px 10px;
+    margin-bottom: 8px;
+  }
+  
+  .hero__title {
+    font-size: clamp(18px, 6vw, 32px); /* 更保守的尺寸 */
+    margin: 8px 0 6px;
+    line-height: 1;
+    word-break: break-word; /* 防止长词溢出 */
+  }
+  
+  .hero__subtitle {
+    font-size: clamp(10px, 1.8vw, 12px);
+    margin: 4px auto 14px;
+    line-height: 1.3;
+    word-break: break-word;
+  }
+  
+  .hero__cta {
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    margin-top: -4px;
+  }
+  
+  .btn {
+    width: 100%; /* 满宽按钮 */
+    justify-content: center;
+    padding: 10px 12px;
+    font-size: 13px;
+    min-height: 44px;
+    border-radius: 10px;
+  }
+  
+  .hero__pills {
+    gap: 3px;
+    margin-top: 10px;
+  }
+  
+  .pill {
+    font-size: 10px;
+    border-radius: 14px;
+    /* 使用全局设置的固定高度32px和统一padding */
+  }
+  
+  .search-box {
+    margin: 0 -1px;
+    border-radius: 12px;
+  }
+  
+  .search-input-with-logo {
+    font-size: 14px;
+    padding: 1rem 0;
+  }
+  
+  .logo-wrap {
+    padding-left: 0.75rem;
+  }
+  
+  .right-hints {
+    padding-right: 0.75rem;
+  }
+  
+  .results-grid {
+    grid-template-columns: repeat(auto-fill, minmax(68px, 1fr));
+    gap: 0.0625rem;
+    padding: 0.375rem;
+  }
+  
+  .result-item {
+    min-height: 52px;
+    padding: 0.1875rem 0.0625rem;
+    border-radius: 6px;
+  }
+  
+  .result-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+  
+  .result-title {
+    font-size: 0.5rem;
+    line-height: 0.95;
+  }
+  
+  .result-description {
+    font-size: 0.4rem;
+  }
+}
+
+/* 确保内容在视口边界内 */
+@media (max-width: 768px) {
+  .hero__title,
+  .hero__subtitle {
+    /* 防止文字溢出视口 */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+  
+  /* 确保搜索框不会超出屏幕 */
+  .search-shell {
+    min-width: 0; /* 允许收缩 */
+    max-width: 100%;
+  }
+  
+  .search-box {
+    min-width: 0;
+    box-sizing: border-box;
+  }
 }
 
 /* Hero动画效果 */
