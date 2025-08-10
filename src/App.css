@@ -90,7 +90,6 @@
 .hero .theme-toggle-input:checked + .theme-toggle .ri-sun-line,
 .hero.hero--light .theme-toggle .ri-sun-line {
   display: block;
-  color: #f59e0b;
 }
 
 .hero .theme-toggle-input:checked + .theme-toggle .ri-moon-line,
@@ -107,6 +106,11 @@
 .hero .theme-toggle-input:checked + .theme-toggle:hover,
 .hero.hero--light .theme-toggle:hover {
   background: rgba(var(--border-color-rgb), 0.08);
+}
+
+/* GitHub 链接按钮样式 - 完全继承主题切换按钮样式 */
+.hero .github-link {
+  text-decoration: none;
 }
 
 /* 明色模式下的现代化标签与按钮（仅限 hero） */

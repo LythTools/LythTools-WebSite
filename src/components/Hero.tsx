@@ -2,6 +2,16 @@ export function Hero() {
   return (
     <section className="hero" role="banner">
       <div className="hero__toolbar">
+        <a 
+          className="theme-toggle github-link" 
+          href="https://github.com/LythTools/LythTools-WebSite" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          title="查看 GitHub 仓库"
+          aria-label="查看 GitHub 仓库"
+        >
+          <i className="icon ri-github-line" aria-hidden></i>
+        </a>
         <input
           id="themeToggle"
           className="theme-toggle-input"
