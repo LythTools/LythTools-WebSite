@@ -106,7 +106,7 @@ export function Hero() {
               让开发更轻，<strong>效率更高</strong>
             </h1>
             <p className="hero__subtitle">
-              LythTools 集成多功能跨平台效率工具，Utools的优质开源替代品，开发者和设计师的利器。
+              LythTools 集成多功能跨平台效率工具，Utools 的优质开源替代品，开发者和设计师的利器。
               当前为软件内部测试阶段，欢迎您的使用与反馈。正式版发布敬请期待！
             </p>
             <div className="hero__cta">
