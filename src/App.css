@@ -62,11 +62,12 @@ button, a, .btn, .pill, .theme-toggle, .result-item {
 .hero {
   position: relative;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  justify-content: center;
   box-sizing: border-box;
-  height: 100vh;
-  height: 100svh;
-  height: 100dvh;
+  min-height: 100vh;
+  min-height: 100svh;
+  min-height: 100dvh;
   padding-block: clamp(56px, 8vh, 96px);
   padding-inline: min(7vw, 72px);
   overflow: clip;
@@ -506,9 +507,10 @@ button, a, .btn, .pill, .theme-toggle, .result-item {
 /* 小平板和大手机横屏 (576px - 768px) */
 @media (max-width: 768px) {
   .hero {
-    /* 增加顶部边距避免工具栏覆盖 */
-    padding-block: clamp(64px, 7vh, 80px) clamp(32px, 4vh, 56px);
+    /* 确保内容从顶部开始，增加足够的顶部边距避免工具栏覆盖 */
+    padding-block: clamp(80px, 10vh, 120px) clamp(32px, 4vh, 56px);
     padding-inline: min(5vw, 32px);
+    justify-content: flex-start;
   }
   
   .hero .hero__toolbar {

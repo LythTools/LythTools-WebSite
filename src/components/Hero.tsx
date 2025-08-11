@@ -71,7 +71,7 @@ export function Hero() {
       <div className="hero__toolbar">
         <a 
           className="theme-toggle github-link" 
-          href="https://github.com/LythTools/LythTools-WebSite" 
+          href="https://github.com/LythTools/LythTools" 
           target="_blank" 
           rel="noopener noreferrer"
           title="查看 GitHub 仓库"
